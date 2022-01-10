@@ -17,7 +17,7 @@ const listContacts = async ({
     sortCriteria = { [`${sortByDesc}`]: -1 }
   }
   if (filter) {
-    result = result.select(filter.split('|').join(' '))
+    result = result.select(filter.split('|').join(' ')) // 'name age'
   }
   result = await result
     .skip(Number(skip))
