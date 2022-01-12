@@ -2,8 +2,8 @@ import repositoryContacts from '../../repository/contacts'
 import { HttpCode } from '../../lib/constants'
 
 const getContacts = async (req, res, next) => {
-  const { id: userId } = req.user
-  const contacts = await repositoryContacts.listContacts(userId, req.query)
+  console.log(req.query)
+  const contacts = await repositoryContacts.listContacts(req.query)
   res
     .status(HttpCode.OK)
     .json({ status: 'success', code: HttpCode.OK, data: { ...contacts } })
@@ -11,13 +11,12 @@ const getContacts = async (req, res, next) => {
 
 const getContactById = async (req, res, next) => {
   const { id } = req.params
-  const { id: userId } = req.user
-  const contact = await repositoryContacts.getContactById(userId, id)
-  console.log(contact) // toObject
+  const contact = await repositoryContacts.getContactById(id)
+  console.log(contact)
   if (contact) {
     return res
       .status(HttpCode.OK)
-      .json({ status: 'success', code: HttpCode.OK, data: { contact } }) // toJson
+      .json({ status: 'success', code: HttpCode.OK, data: { contact } })
   }
   res
     .status(HttpCode.NOT_FOUND)
@@ -25,8 +24,7 @@ const getContactById = async (req, res, next) => {
 }
 
 const addContact = async (req, res, next) => {
-  const { id: userId } = req.user
-  const newContact = await repositoryContacts.addContact(userId, req.body)
+  const newContact = await repositoryContacts.addContact(req.body)
   res.status(HttpCode.CREATED).json({
     status: 'success',
     code: HttpCode.OK,
@@ -36,8 +34,7 @@ const addContact = async (req, res, next) => {
 
 const removeContact = async (req, res, next) => {
   const { id } = req.params
-  const { id: userId } = req.user
-  const contact = await repositoryContacts.removeContact(userId, id)
+  const contact = await repositoryContacts.removeContact(id)
   if (contact) {
     return res
       .status(HttpCode.OK)
@@ -50,8 +47,7 @@ const removeContact = async (req, res, next) => {
 
 const updateContact = async (req, res, next) => {
   const { id } = req.params
-  const { id: userId } = req.user
-  const contact = await repositoryContacts.updateContact(userId, id, req.body)
+  const contact = await repositoryContacts.updateContact(id, req.body)
   if (contact) {
     return res
       .status(HttpCode.OK)
