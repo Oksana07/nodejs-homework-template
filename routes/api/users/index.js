@@ -5,7 +5,6 @@ import { upload } from '../../../middlewares/upload'
 import roleAccess from '../../../middlewares/role-access'
 import { Role } from '../../../lib/constants'
 
-
 const router = new Router()
 
 router.get('/stats/:id', guard, roleAccess(Role.ADMIN), aggregation)
