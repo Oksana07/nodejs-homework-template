@@ -13,6 +13,7 @@ import {
   SenderNodemailer,
   SenderSendgrid,
 } from '../../service/email'
+import { CustomError } from '../../lib/custom-error'
 
 const aggregation = async (req, res, next) => {
   const { id } = req.params
@@ -22,9 +23,7 @@ const aggregation = async (req, res, next) => {
       .status(HttpCode.OK)
       .json({ status: 'success', code: HttpCode.OK, data })
   }
-  res
-    .status(HttpCode.NOT_FOUND)
-    .json({ status: 'error', code: HttpCode.NOT_FOUND, message: 'Not found' })
+  throw new CustomError(HttpCode.NOT_FOUND, 'Not found')
 }
 
 const uploadAvatar = async (req, res, next) => {
@@ -53,11 +52,7 @@ const verifyUser = async (req, res, next) => {
       data: { message: 'Success' },
     })
   }
-  res.status(HttpCode.BAD_REQUEST).json({
-    status: 'success',
-    code: HttpCode.BAD_REQUEST,
-    data: { message: 'Invalid token' },
-  })
+  throw new CustomError(HttpCode.BAD_REQUEST, 'Invalid token')
 }
 
 const repeatEmailForVerifyUser = async (req, res, next) => {
@@ -75,6 +70,7 @@ const repeatEmailForVerifyUser = async (req, res, next) => {
       name,
       verifyTokenEmail,
     )
+
     if (isSend) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -82,18 +78,9 @@ const repeatEmailForVerifyUser = async (req, res, next) => {
         data: { message: 'Success' },
       })
     }
-    return res.status(HttpCode.UE).json({
-      status: 'error',
-      code: HttpCode.UE,
-      data: { message: 'Unprocessable Entity' },
-    })
+    throw new CustomError(HttpCode.SE, 'Service Unavailable')
   }
-
-  res.status(HttpCode.NOT_FOUND).json({
-    status: 'error',
-    code: HttpCode.NOT_FOUND,
-    data: { message: 'User with email not found' },
-  })
+  throw new CustomError(HttpCode.NOT_FOUND, 'User with email not found')
 }
 
 export { aggregation, uploadAvatar, verifyUser, repeatEmailForVerifyUser }
